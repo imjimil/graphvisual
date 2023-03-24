@@ -11,14 +11,20 @@ function generateRandomGraph(numVertices) {
     }
   
     // generate edges
-    for (let i = 0; i < numVertices; i++) {
-      const numEdges = Math.floor(Math.random() * (numVertices - i)); // number of edges for this vertex
-      const start = i + 1; // index to start looking for target vertices
+    for (let i = 0; i < numVertices - 1; i++) {
+      const source = vertices[i];
+      const target = vertices[i + 1];
+      edges.push({ source, target });
+    }
+  
+    // add remaining edges randomly
+    for (let i = 0; i < numVertices - 1; i++) {
+      const source = vertices[i];
+      const numEdges = Math.floor(Math.random() * (numVertices - i - 1)); // number of edges for this vertex
       let count = 0; // number of edges added so far
   
       while (count < numEdges) {
-        const targetIndex = Math.floor(Math.random() * (numVertices - start)) + start; // index of target vertex
-        const source = vertices[i];
+        const targetIndex = Math.floor(Math.random() * (numVertices - i - 1)) + i + 1; // index of target vertex
         const target = vertices[targetIndex];
   
         if (!edges.some(edge => edge.source === source && edge.target === target)) { // check if edge already exists
@@ -30,6 +36,7 @@ function generateRandomGraph(numVertices) {
   
     return { vertices, edges };
   }
+  
 
 const FirstFit = ({numVertices}) => {
   const svgRef = useRef();
