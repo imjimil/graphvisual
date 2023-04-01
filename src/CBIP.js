@@ -72,7 +72,6 @@ const CBIP = ({numVertices, valueOfK}) => {
         link.attr('x1', d => d.source.x).attr('y1', d => d.source.y).attr('x2', d => d.target.x).attr('y2', d => d.target.y);
       });
   
-      // CBIP Algorithm
       const degrees = {};
       graphData.links.forEach(link => {
         degrees[link.source.id] = (degrees[link.source.id] || 0) + 1;
@@ -83,14 +82,12 @@ const CBIP = ({numVertices, valueOfK}) => {
       const counter = new Set();
       const colorList = ['antiquewhite', 'chocolate', 'lightblue', 'cornflowerblue', 'darkorchid', 'grey'];
 
-      // Sort the nodes by degree in descending order
       const sortedNodes = graphData.nodes.slice(0, currentIndex).sort((a, b) => degrees[b.id] - degrees[a.id]);
 
       sortedNodes.forEach(node => {
         const usedColors = {};
         const adjacentNodes = new Set();
 
-        // Collect the colors used by adjacent nodes and add adjacent nodes to the set
         graphData.links.forEach(link => {
           if (link.source.id === node.id) {
             usedColors[nodeColors[link.target.id]] = true;
@@ -102,14 +99,12 @@ const CBIP = ({numVertices, valueOfK}) => {
           }
         });
 
-        // Check the colors of adjacent nodes and mark them as used
         adjacentNodes.forEach(adjacentNode => {
           if (nodeColors[adjacentNode.id]) {
             usedColors[nodeColors[adjacentNode.id]] = true;
           }
         });
 
-        // Create the forbidden set by adding the colors of all previously colored nodes that are adjacent to the current node
         const forbiddenColors = new Set();
         graphData.nodes.slice(0, currentIndex).forEach(coloredNode => {
           if (adjacentNodes.has(coloredNode)) {
@@ -117,7 +112,6 @@ const CBIP = ({numVertices, valueOfK}) => {
           }
         });
 
-        // Find the first available color that is not in the forbidden set
         for (let i = 0; i < colorList.length; i++) {
           if (!usedColors[colorList[i]] && !forbiddenColors.has(colorList[i])) {
             nodeColors[node.id] = colorList[i];
