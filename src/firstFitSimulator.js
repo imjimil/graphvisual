@@ -1,54 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
+import { getNodeAndEdges } from './kColorGraphs';
 
-function generateRandomGraph(numVertices) {
-    const vertices = [];
-    const edges = [];
-  
-    // generate vertices
-    for (let i = 0; i < numVertices; i++) {
-      vertices.push(String.fromCharCode(65 + i)); // A, B, C, ...
-    }
-  
-    // generate edges
-    for (let i = 0; i < numVertices - 1; i++) {
-      const source = vertices[i];
-      const target = vertices[i + 1];
-      edges.push({ source, target });
-    }
-  
-    // add remaining edges randomly
-    for (let i = 0; i < numVertices - 1; i++) {
-      const source = vertices[i];
-      const numEdges = Math.floor(Math.random() * (numVertices - i - 1)); // number of edges for this vertex
-      let count = 0; // number of edges added so far
-  
-      while (count < numEdges) {
-        const targetIndex = Math.floor(Math.random() * (numVertices - i - 1)) + i + 1; // index of target vertex
-        const target = vertices[targetIndex];
-  
-        if (!edges.some(edge => edge.source === source && edge.target === target)) { // check if edge already exists
-          edges.push({ source, target });
-          count++;
-        }
-      }
-    }
-  
-    return { vertices, edges };
-  }
-  
-
-const FirstFit = ({numVertices}) => {
+const FirstFit = ({numVertices, valueOfK}) => {
   const svgRef = useRef();
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [currentIndex, setCurrentIndex] = useState(0);
   const [totalUsedColors, setTotalUsedColors] = useState(0);
 
-  const data = generateRandomGraph(numVertices);
-
-  const vertices = data.vertices;
-  const edges = data.edges;
-  console.log(data);
+  const {vertices, edges} = getNodeAndEdges(numVertices, valueOfK);
 
   useEffect(() => {
     // create nodes array from vertices
@@ -110,6 +70,8 @@ const FirstFit = ({numVertices}) => {
       node.attr('transform', d => `translate(${d.x},${d.y})`);
       link.attr('x1', d => d.source.x).attr('y1', d => d.source.y).attr('x2', d => d.target.x).attr('y2', d => d.target.y);
     });
+
+    //First-Fit
     const degrees = {};
     graphData.links.forEach(link => {
         degrees[link.source.id] = (degrees[link.source.id] || 0) + 1;
@@ -117,7 +79,7 @@ const FirstFit = ({numVertices}) => {
     });
 
     const nodeColors = {};
-    const counter = new Set();;
+    const counter = new Set();
     const colorList = ['antiquewhite', 'chocolate', 'lightblue', 'cornflowerblue', 'darkorchid', 'grey'];
     graphData.nodes.slice(0, currentIndex).forEach(node => {
         const usedColors = {};
@@ -155,8 +117,7 @@ const FirstFit = ({numVertices}) => {
           }, 2000);
           
           return () => clearInterval(interval);
-    }
-    
+    }  
   }, []);
 
   return (
@@ -164,7 +125,7 @@ const FirstFit = ({numVertices}) => {
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', overflow: 'auto' }}>
         <svg ref={svgRef} style={{ margin: 'auto', 'width': '100%', height: '100%' }} />
     </div>
-    <h4>Number of color used is {totalUsedColors}</h4>
+    <h3 style={{ color: totalUsedColors <= valueOfK ? 'green' : 'yellow' }}> Number of color used is {totalUsedColors}</h3>
     </div>
   );
 };
