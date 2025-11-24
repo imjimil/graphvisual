@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaPalette, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { FaPalette } from 'react-icons/fa';
 
 const StatsPanel = ({ totalUsedColors, conflicts, theme }) => {
   

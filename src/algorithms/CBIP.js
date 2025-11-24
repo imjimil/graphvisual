@@ -56,7 +56,6 @@ function bipartitePartition(component, links) {
 
   while (queue.length > 0) {
     const { node, level } = queue.shift();
-    const currentPartition = level % 2 === 0 ? partitionA : partitionB;
     const oppositePartition = level % 2 === 0 ? partitionB : partitionA;
 
     // Find neighbors
@@ -107,7 +106,7 @@ export const CBIPColoring = (vertices, edges, currentIndex) => {
     const component = findConnectedComponent(currentNode, nodes, links);
     
     // Partition component into two independent sets (bipartition)
-    const { partitionA, partitionB } = bipartitePartition(component, links);
+    const { partitionB } = bipartitePartition(component, links);
     
     // Current vertex belongs to partitionA
     // Find colors used in partitionB

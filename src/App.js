@@ -450,7 +450,7 @@ const App = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    const { vertices, edges } = getNodeAndEdges(numVertices);
+                    getNodeAndEdges(numVertices);
                     setShowGraphBuilder(true);
                   }}
                   style={{
@@ -571,13 +571,6 @@ const App = () => {
             algorithm={algorithm}
             theme={theme}
             onEditGraph={() => {
-              const currentGraph = customGraph || {
-                vertices,
-                edges: edges.map(e => ({ 
-                  source: typeof e.source === 'string' ? e.source : e.source.id,
-                  target: typeof e.target === 'string' ? e.target : e.target.id,
-                })),
-              };
               setShowGraphBuilder(true);
             }}
             canEdit={true}
